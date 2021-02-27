@@ -1,22 +1,95 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://gushi1912.github.io</id>
-    <title>顾咕咕的博客</title>
-    <updated>2021-02-27T11:10:30.045Z</updated>
-    <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://gushi1912.github.io"/>
-    <link rel="self" href="https://gushi1912.github.io/atom.xml"/>
-    <subtitle>温故而知新</subtitle>
-    <logo>https://gushi1912.github.io/images/avatar.png</logo>
-    <icon>https://gushi1912.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2021, 顾咕咕的博客</rights>
-    <entry>
-        <title type="html"><![CDATA[Maven笔记]]></title>
-        <id>https://gushi1912.github.io/post/maven-bi-ji/</id>
-        <link href="https://gushi1912.github.io/post/maven-bi-ji/">
-        </link>
-        <updated>2021-02-27T11:08:27.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="maven概述">Maven概述</h2>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Maven笔记 | 顾咕咕的博客</title>
+<link rel="shortcut icon" href="https://gushi1912.github.io/favicon.ico?v=1614424222330">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://gushi1912.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Maven笔记 | 顾咕咕的博客 - Atom Feed" href="https://gushi1912.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="Maven概述
+Maven是一个项目管理工具，它包含了一个项目对象模型（POM：Project Object Model），一组标准集合，一个项目生命周期（Project Lifiecycl），一个依赖管理系统（Dependency Man..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://gushi1912.github.io">
+  <img class="avatar" src="https://gushi1912.github.io/images/avatar.png?v=1614424222330" alt="">
+  </a>
+  <h1 class="site-title">
+    顾咕咕的博客
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Maven笔记
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-02-27
+              </span>
+              <span>
+                18 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h2 id="maven概述">Maven概述</h2>
 <p>Maven是一个项目管理工具，它包含了一个项目对象模型（POM：Project Object Model），一组标准集合，一个项目生命周期（Project Lifiecycl），一个依赖管理系统（Dependency Management System），和用来运行定义在生命周期阶段（phase）中插件（plugin）目标（goal）的逻辑。简单来说，Maven是一个项目管理工具，可以对Java<strong>项目进行构建</strong>，<strong>依赖管理</strong>。</p>
 <h2 id="maven安装">Maven安装</h2>
 <ol>
@@ -403,6 +476,95 @@ lifecycle就表示一个java项目中的某个module，一个module中包含多�
 </code></pre>
 <p>type为pom表示引入该类型的pom文件，并且不会实际导入依赖，只是起到一个版本管理的作用，子项目导入依赖的时候不需要添加版本信息。<br>
 scope设置为import可以继承另一个pom文件，这样就可以实现多继承。</p>
-]]></content>
-    </entry>
-</feed>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#maven%E6%A6%82%E8%BF%B0">Maven概述</a></li>
+<li><a href="#maven%E5%AE%89%E8%A3%85">Maven安装</a></li>
+<li><a href="#maven%E8%AF%A6%E8%A7%A3">Maven详解</a>
+<ul>
+<li><a href="#maven-pom%E6%96%87%E4%BB%B6">Maven-pom文件</a></li>
+<li><a href="#maven%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">Maven配置文件</a></li>
+<li><a href="#maven-%E4%BE%9D%E8%B5%96%E7%9A%84scope">Maven-依赖的scope</a></li>
+<li><a href="#maven%E4%BB%93%E5%BA%93">Maven仓库</a></li>
+<li><a href="#maven%E6%8F%92%E4%BB%B6">Maven插件</a></li>
+<li><a href="#maven-%E5%BC%95%E5%85%A5%E5%A4%96%E9%83%A8%E4%BE%9D%E8%B5%96">Maven-引入外部依赖</a></li>
+<li><a href="#maven-snapshotrelease">Maven-Snapshot&amp;Release</a><br>
+*</li>
+<li><a href="#maven-%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86">Maven-依赖管理</a></li>
+<li><a href="#maven-dependencymanagement">Maven-DependencyManagement</a></li>
+<li><a href="#maven-%E5%A4%9A%E6%A8%A1%E5%9D%97%E9%A1%B9%E7%9B%AE%E8%AE%BE%E7%BD%AE">Maven-多模块项目设置</a>
+<ul>
+<li><a href="#type%E6%A0%87%E7%AD%BE">type标签</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://gushi1912.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
