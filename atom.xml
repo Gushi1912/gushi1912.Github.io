@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://gushi1912.github.io</id>
     <title>顾咕咕的博客</title>
-    <updated>2021-03-04T07:33:57.977Z</updated>
+    <updated>2021-03-26T05:21:33.896Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://gushi1912.github.io"/>
     <link rel="self" href="https://gushi1912.github.io/atom.xml"/>
@@ -219,7 +219,24 @@ lifecycle就表示一个java项目中的某个module，一个module中包含多�
   &lt;/server&gt;
 &lt;/servers&gt;
 </code></pre>
-<p><strong>部署构件至远程仓库</strong> ：降打包后的代码部署到远程仓库需要手动配置远程仓库信息。</p>
+<p><strong>部署构件至远程仓库</strong> ：将打包后的代码部署到远程仓库需要手动配置远程仓库信息。添加以下配置到pom文件中。</p>
+<pre><code class="language-XML">&lt;project&gt;
+  &lt;distributionManagement&gt;
+    &lt;repository&gt;
+    	&lt;!--此处的id要和settings.xml文件里配置的id相对应 --&gt;
+    	&lt;id&gt;releases&lt;/id&gt;
+    	&lt;!--仓库名称 --&gt;
+    	&lt;name&gt;Releases&lt;/name&gt;
+    	&lt;url&gt;私服仓库地址&lt;/url&gt;
+   &lt;/repository&gt;
+   &lt;snapshotRespository&gt;
+    	&lt;id&gt;releases&lt;/id&gt;
+    	&lt;name&gt;Releases&lt;/name&gt;
+    	&lt;url&gt;私服仓库地址&lt;/url&gt;
+   &lt;/snapshotRespository&gt;
+  &lt;/distributionManagement&gt;
+&lt;/project&gt;
+</code></pre>
 <h3 id="maven插件">Maven插件</h3>
 <p>Maven生命周期中的每一个阶段的具体实现都是依靠Maven插件实现的。可以使用以下命令格式执行具体goal。</p>
 <blockquote>
