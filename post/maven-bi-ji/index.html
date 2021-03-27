@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Maven笔记 | 顾咕咕的博客</title>
-<link rel="shortcut icon" href="https://gushi1912.github.io/favicon.ico?v=1616823547016">
+<link rel="shortcut icon" href="https://gushi1912.github.io/favicon.ico?v=1616823865898">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://gushi1912.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="Maven笔记 | 顾咕咕的博客 - Atom Feed" href="https://gushi1912.github.io/atom.xml">
@@ -31,7 +31,7 @@ Maven是一个项目管理工具，它包含了一个项目对象模型（POM：
       <div class="main-content">
         <div class="site-header">
   <a href="https://gushi1912.github.io">
-  <img class="avatar" src="https://gushi1912.github.io/images/avatar.png?v=1616823547016" alt="">
+  <img class="avatar" src="https://gushi1912.github.io/images/avatar.png?v=1616823865898" alt="">
   </a>
   <h1 class="site-title">
     顾咕咕的博客
@@ -205,8 +205,7 @@ source /etc/profile
 <li><strong>post-site     执行一些需要在生成站点文档之后完成的工作，并且为部署做准备</strong></li>
 <li><strong>site-deploy     将生成的站点文档部署到特定的服务器上</strong></li>
 </ul>
-<p>**<br>
-<strong>执行mvn命令的时候会执行该生命周期内包含当前phase以及该phase之前所有phase。</strong></p>
+<p><strong>执行mvn命令的时候会执行该生命周期内包含当前phase以及该phase之前所有phase。</strong></p>
 <pre><code>lifecycle，phase，goal之间的比较：
 一个lifecycle包含多个phase，可以看上文。而一个phase执行的时候会涉及到多个goal执行。所以真正执行操作的是goal。goal的格式一般为 abc:xyz 。
 可以类比java：
@@ -258,8 +257,7 @@ lifecycle就表示一个java项目中的某个module，一个module中包含多�
 <p>Maven中的仓库分为本地仓库，一般是在本机中；中央仓库，maven项目组所维护的一个大型公共仓库；远程仓库，一般是公司自己局域网内部的自建仓库，包含一些公司自己开发的组件。</p>
 <pre><code>pom文件中的依赖是先从本地仓库查找，没找到会去pom文件中配置的远程仓库去查找，最后去从中央仓库中查找，最后没找到会提示错误信息，退出。
 </code></pre>
-<p>**<br>
-<strong>本地仓库</strong>：maven的默认仓库是在本机中的${user.home}/.m2/respository/目录下，其中user.dir表示用户目录。当然我们也可以修改默认仓库的路径。只需要修改maven安装目录下的conf目录中的settings.conf。<br>
+<p><strong>本地仓库</strong>：maven的默认仓库是在本机中的${user.home}/.m2/respository/目录下，其中user.dir表示用户目录。当然我们也可以修改默认仓库的路径。只需要修改maven安装目录下的conf目录中的settings.conf。<br>
 <img src="https://gushi1912.github.io/post-images/1614426341613.png" alt="" loading="lazy"><br>
 **中央仓库：**默认的中央仓库是设置在国外的服务器，速度很慢，我们一般用国内的镜像地址来替代默认的中央仓库。一般选用的是阿里云的镜像仓库地址，当然有多种选择。<br>
 <img src="https://gushi1912.github.io/post-images/1614426358216.png" alt="" loading="lazy"><br>
