@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://gushi1912.github.io</id>
     <title>顾咕咕的博客</title>
-    <updated>2021-03-28T09:35:04.996Z</updated>
+    <updated>2021-03-28T09:36:03.957Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://gushi1912.github.io"/>
     <link rel="self" href="https://gushi1912.github.io/atom.xml"/>
@@ -16,8 +16,7 @@
         <link href="https://gushi1912.github.io/post/docker-ji-chu-pian-yi/">
         </link>
         <updated>2021-03-28T09:27:28.000Z</updated>
-        <content type="html"><![CDATA[<figure data-type="image" tabindex="1"><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1614909221854-d4917a72-46c9-4d9d-baf4-8147899a6cff.png#align=left&amp;display=inline&amp;height=1336&amp;margin=%5Bobject%20Object%5D&amp;name=docker.png&amp;originHeight=1336&amp;originWidth=2126&amp;size=69296&amp;status=done&amp;style=none&amp;width=2126" alt="docker.png" loading="lazy"></figure>
-<h1 id="docker概念">Docker概念</h1>
+        <content type="html"><![CDATA[<h1 id="docker概念">Docker概念</h1>
 <p><strong>Hypervisor虚拟化技术的介绍</strong> ： <a href="https://www.jianshu.com/p/b9900b9dec34">https://www.jianshu.com/p/b9900b9dec34</a></p>
 <blockquote>
 <p>Docker在虚拟化的容器中增加了一个应用程序部署引擎。该引擎的目标就是提供一个轻量的，快速的环境，能够运行开发者的程序，并方便高效地将程序从开发者的笔记本部署到测试环境，然后再部署到正式环境。<br>
@@ -133,7 +132,7 @@ docker-ce.x86_64            3:19.03.8-3.el7                    docker-ce-stable
 阿里云服务器页面中，寻找容器镜像服务中的镜像加速器。<br>
 <img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615636291167-b72dca63-a571-41bd-badf-c6d1dcc2a693.png#align=left&amp;display=inline&amp;height=586&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1171&amp;originWidth=1271&amp;size=176772&amp;status=done&amp;style=none&amp;width=635.5" alt="image.png" loading="lazy"></p>
 <h1 id="docker命令">Docker命令</h1>
-<figure data-type="image" tabindex="2"><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/2907980/1615624148373-8735ce7c-d2b9-4e86-854b-02869a67d4b9.jpeg#align=left&amp;display=inline&amp;height=540&amp;margin=%5Bobject%20Object%5D&amp;name=%E5%91%BD%E4%BB%A4.jpeg&amp;originHeight=540&amp;originWidth=720&amp;size=49039&amp;status=done&amp;style=none&amp;width=720" alt="命令.jpeg" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/2907980/1615624148373-8735ce7c-d2b9-4e86-854b-02869a67d4b9.jpeg#align=left&amp;display=inline&amp;height=540&amp;margin=%5Bobject%20Object%5D&amp;name=%E5%91%BD%E4%BB%A4.jpeg&amp;originHeight=540&amp;originWidth=720&amp;size=49039&amp;status=done&amp;style=none&amp;width=720" alt="命令.jpeg" loading="lazy"></figure>
 <h2 id="帮助命令">帮助命令</h2>
 <pre><code class="language-shell">docker version     # 显示docker的版本信息
 docker info        # 显示docker的系统信息，包括镜像和容器的数量
