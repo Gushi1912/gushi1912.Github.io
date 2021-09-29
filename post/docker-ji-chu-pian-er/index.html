@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Docker-基础篇（二） | 顾咕咕的博客</title>
-<link rel="shortcut icon" href="https://gushi1912.github.io/favicon.ico?v=1632904647343">
+<link rel="shortcut icon" href="https://gushi1912.github.io/favicon.ico?v=1632905183083">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://gushi1912.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="Docker-基础篇（二） | 顾咕咕的博客 - Atom Feed" href="https://gushi1912.github.io/atom.xml">
@@ -35,7 +35,7 @@ Docker里的容器之间有一个数据共享的技术，Docker容器..." />
       <div class="main-content">
         <div class="site-header">
   <a href="https://gushi1912.github.io">
-  <img class="avatar" src="https://gushi1912.github.io/images/avatar.png?v=1632904647343" alt="">
+  <img class="avatar" src="https://gushi1912.github.io/images/avatar.png?v=1632905183083" alt="">
   </a>
   <h1 class="site-title">
     顾咕咕的博客
@@ -102,7 +102,7 @@ Docker里的容器之间有一个数据共享的技术，Docker容器..." />
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <figure data-type="image" tabindex="1"><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615707645869-9caa9562-b9b6-4883-a7e4-efcbb1b4f267.png#align=left&amp;display=inline&amp;height=1336&amp;margin=%5Bobject%20Object%5D&amp;name=docker.png&amp;originHeight=1336&amp;originWidth=2126&amp;size=69296&amp;status=done&amp;style=none&amp;width=2126" alt="docker.png" loading="lazy"></figure>
+                <figure data-type="image" tabindex="1"><img src="https://gushi1912.github.io/post-images/1632904816234.png" alt="" loading="lazy"></figure>
 <h1 id="容器数据卷">容器数据卷</h1>
 <h2 id="什么是容器数据卷">什么是容器数据卷</h2>
 <p>Docker可以将应用和环境打包成一个镜像。<br>
@@ -129,7 +129,7 @@ docker run -it -v /home/gugugu:/home --name centos centos /bin/bash
 #使用inspect命令来查看挂载情况
 docker inspect centos
 </code></pre>
-<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615708914260-b6fdb21c-3406-4443-b2aa-571e56667313.png#align=left&amp;display=inline&amp;height=299&amp;margin=%5Bobject%20Object%5D&amp;name=%E6%8C%82%E8%BD%BD.png&amp;originHeight=299&amp;originWidth=854&amp;size=21913&amp;status=done&amp;style=none&amp;width=854" alt="挂载.png" loading="lazy"><br>
+<p><img src="https://gushi1912.github.io/post-images/1632904867185.png" alt="" loading="lazy"><br>
 在容器中的挂载目录中创建一个文件之后，我们可以在宿主机相对应的目录下看到对应文件。<br>
 当我们停止容器之后，在宿主机的对应目录下修改该文件，启动容器之后我们可以看到修改的文件会自动同步过来，这就是双向绑定。<br>
 这样做的好处：比如我们启动一个nginx容器，需要修改nginx中的配置文件，我们可以不用每次进入容器中修改，可以使用挂载的方式将nginx的配置文件同步到宿主机中，这样就可以直接在宿主机中修改，而不用进入容器中。</p>
@@ -150,16 +150,16 @@ docker run --name mysql -p 3306:3306 -d -v /home/mysql/data:/var/lib/mysql -v /h
 <p>启动成功之后就可以测试是否挂载成功。<br>
 我们首先使用navicat远程连接测试是否可以连接，正常情况下是可以连接的。<br>
 连接成功之后我们在mysql中新建一个数据库test_db。<br>
-<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615717527251-37d21929-4a69-4def-964e-caaed7cff93f.png#align=left&amp;display=inline&amp;height=221&amp;margin=%5Bobject%20Object%5D&amp;name=%E6%B5%8B%E8%AF%952.png&amp;originHeight=221&amp;originWidth=412&amp;size=10244&amp;status=done&amp;style=none&amp;width=412" alt="测试2.png" loading="lazy"><br>
+<img src="https://gushi1912.github.io/post-images/1632904898511.png" alt="" loading="lazy"><br>
 然后打开容器中mysql存放数据的目录 <code>/var/lib/mysql/</code> 可以看到test_db目录：<br>
-<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615717700186-bd5d66e6-0538-4bf2-9b63-19454d7a5392.png#align=left&amp;display=inline&amp;height=487&amp;margin=%5Bobject%20Object%5D&amp;name=%E6%B5%8B%E8%AF%951_1.png&amp;originHeight=649&amp;originWidth=956&amp;size=63512&amp;status=done&amp;style=none&amp;width=717" alt="测试1_1.png" loading="lazy"><br>
+<img src="https://gushi1912.github.io/post-images/1632904915352.png" alt="" loading="lazy"><br>
 打开宿柱机的挂载目录也可以看到相应的文件。<br>
-<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615717770835-efdb637d-190d-4673-81fa-f0f1cd5c322f.png#align=left&amp;display=inline&amp;height=437&amp;margin=%5Bobject%20Object%5D&amp;name=%E6%B5%8B%E8%AF%951.png&amp;originHeight=583&amp;originWidth=1044&amp;size=63839&amp;status=done&amp;style=none&amp;width=783" alt="测试1.png" loading="lazy"><br>
+<img src="https://gushi1912.github.io/post-images/1632904925672.png" alt="" loading="lazy"><br>
 接下来测试配置文件目录的挂载情况，我们在宿主机的配置文件目录/home/mysql/conf下创建一个新的文件test.html。<br>
-<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615717859387-25cb94df-afff-420e-8dc6-c53ef678d8de.png#align=left&amp;display=inline&amp;height=154&amp;margin=%5Bobject%20Object%5D&amp;name=%E6%B5%8B%E8%AF%953.png&amp;originHeight=205&amp;originWidth=959&amp;size=17092&amp;status=done&amp;style=none&amp;width=719" alt="测试3.png" loading="lazy"><br>
+<img src="https://gushi1912.github.io/post-images/1632904941253.png" alt="" loading="lazy"><br>
 打开容器中MySQL的的配置文件路径，可以看到新增文件test.html，说明所有路径都成功挂载。<br>
 我们停止并删除容器之后可以看到宿主机中的目录以及文件均未被删除。<br>
-<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615718110942-79798296-bf21-4578-9e28-6cf8f24f59bb.png#align=left&amp;display=inline&amp;height=207&amp;margin=%5Bobject%20Object%5D&amp;name=%E6%B5%8B%E8%AF%955.png&amp;originHeight=207&amp;originWidth=1837&amp;size=26713&amp;status=done&amp;style=none&amp;width=1837" alt="测试5.png" loading="lazy"></p>
+<img src="https://gushi1912.github.io/post-images/1632904951900.png" alt="" loading="lazy"></p>
 <h2 id="具名挂载和匿名挂载">具名挂载和匿名挂载</h2>
 <p>具名挂载就是指定挂载卷的名称   <code>-v 具名路径目录名称：容器路径</code> <br>
 匿名挂载就是不指定挂载卷的名称 <code>-v 容器路径</code> <br>
@@ -169,12 +169,12 @@ docker run --name mysql -p 3306:3306 -d -v /home/mysql/data:/var/lib/mysql -v /h
 docker run --name nginx01 -P -v /etc/nginx nginx
 #使用docker inspect nginx01 查看具体的挂载路径
 </code></pre>
-<figure data-type="image" tabindex="2"><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615722471956-21b8f95f-7acf-4044-9ce6-50df485f276f.png#align=left&amp;display=inline&amp;height=364&amp;margin=%5Bobject%20Object%5D&amp;name=%E5%8C%BF%E5%90%8D%E6%8C%82%E8%BD%BD.png&amp;originHeight=364&amp;originWidth=1700&amp;size=21178&amp;status=done&amp;style=none&amp;width=1700" alt="匿名挂载.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://gushi1912.github.io/post-images/1632904973601.png" alt="" loading="lazy"></figure>
 <pre><code class="language-shell">#具名挂载测试
 docker run --name nginx02 -P -v nginx-conf:/etc/nginx nginx
 docker inspect nginx02
 </code></pre>
-<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615722548848-46296d40-dcec-4ce9-86e1-5c8fff9ad610.png#align=left&amp;display=inline&amp;height=178&amp;margin=%5Bobject%20Object%5D&amp;name=%E5%85%B7%E5%90%8D%E6%8C%82%E8%BD%BD.png&amp;originHeight=355&amp;originWidth=1128&amp;size=14242&amp;status=done&amp;style=none&amp;width=564" alt="具名挂载.png" loading="lazy"><br>
+<p><img src="https://gushi1912.github.io/post-images/1632905003141.png" alt="" loading="lazy"><br>
 <strong>关于Docker volume的操作</strong></p>
 <pre><code class="language-shell">docker volume 
 ls							#列出所有的挂载卷
@@ -186,7 +186,7 @@ prune       Remove all unused local volumes
 rm          Remove one or more volumes
 
 </code></pre>
-<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615722791072-b65cdd56-c531-481e-99f1-1898b26e68ab.png#align=left&amp;display=inline&amp;height=173&amp;margin=%5Bobject%20Object%5D&amp;name=volume_inspect.png&amp;originHeight=346&amp;originWidth=1025&amp;size=17372&amp;status=done&amp;style=none&amp;width=513" alt="volume_inspect.png" loading="lazy"><br>
+<p><img src="https://gushi1912.github.io/post-images/1632905039413.png" alt="" loading="lazy"><br>
 <strong>补充内容</strong></p>
 <pre><code class="language-shell">docker run --name nginx03 -P -v nginx-conf:/etc/nginx:ro nginx
 ro	readonly-只读
@@ -238,9 +238,9 @@ mysql           5.7       a70d36bc331a   7 weeks ago     449MB
 <pre><code class="language-shell">docker run -it gugugu/centos /bin/bash
 </code></pre>
 <p>可以看到容器内部有两个挂载的目录<br>
-<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615816556980-a0d75a68-35d9-4168-b180-c7c77dd25f68.png#align=left&amp;display=inline&amp;height=392&amp;margin=%5Bobject%20Object%5D&amp;name=dockerfile%E6%8C%82%E8%BD%BD.png&amp;originHeight=783&amp;originWidth=1482&amp;size=96591&amp;status=done&amp;style=none&amp;width=741" alt="dockerfile挂载.png" loading="lazy"><br>
+<img src="https://gushi1912.github.io/post-images/1632905052203.png" alt="" loading="lazy"><br>
 使用容器查看命令查看容器的具体细节可以看到宿主机中的对应的挂载目录 <code>docker inspect 52987210ea73</code> ,并且使用的是匿名挂载的方式。<br>
-<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615816644452-67ea5169-7397-453a-a7ac-06b0a06fafae.png#align=left&amp;display=inline&amp;height=318&amp;margin=%5Bobject%20Object%5D&amp;name=dockerfile%E6%8C%82%E8%BD%BD1.png&amp;originHeight=636&amp;originWidth=1678&amp;size=46916&amp;status=done&amp;style=none&amp;width=839" alt="dockerfile挂载1.png" loading="lazy"><br>
+<img src="https://gushi1912.github.io/post-images/1632905058659.png" alt="" loading="lazy"><br>
 这种挂载方式我们平时使用的比较多，主要用于构建我们自己的镜像。<br>
 若构建镜像的时候没有使用dockerfile来挂载卷，我们还可以使用-v的方式在启动的时候挂载。</p>
 <h2 id="数据容器卷">数据容器卷</h2>
@@ -265,7 +265,7 @@ docker run -it --name centos03 --volumes-from centos01 gugugu/centos
 <li>docker run 运行镜像</li>
 <li>docker push 发布镜像（DockerHub、阿里云镜像仓库）</li>
 </ol>
-<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615900458677-51b111d9-31ef-49b5-9cd5-0d6a0774e4d7.png#align=left&amp;display=inline&amp;height=525&amp;margin=%5Bobject%20Object%5D&amp;name=%E5%AE%98%E6%96%B9%E9%95%9C%E5%83%8F.png&amp;originHeight=1050&amp;originWidth=1225&amp;size=126014&amp;status=done&amp;style=none&amp;width=613" alt="官方镜像.png" loading="lazy"><br>
+<p><img src="https://gushi1912.github.io/post-images/1632905072987.png" alt="" loading="lazy"><br>
 上图是centos官方镜像的DockerFile，可以发现很多功能都没有，只是一个简单的基础版镜像。<br>
 我们可以自己制作镜像，添加自己想要的功能。</p>
 <h2 id="dockerfile构建过程">DockerFile构建过程</h2>
@@ -288,7 +288,7 @@ docker run -it --name centos03 --volumes-from centos01 gugugu/centos
 <p>每一个DockerFile的第一行指令都应该是FROM，FROM指令指定一个已经存在的镜像，后续的操作都是基于该镜像进行，这个镜像被称为基础镜像（base image）。</p>
 </blockquote>
 <h2 id="dockerfile命令">DockerFile命令</h2>
-<figure data-type="image" tabindex="3"><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615900900331-23d5042a-905c-4fcf-8859-3252b0e5f4f3.png#align=left&amp;display=inline&amp;height=2025&amp;margin=%5Bobject%20Object%5D&amp;name=Dockerfile.png&amp;originHeight=2025&amp;originWidth=2010&amp;size=152731&amp;status=done&amp;style=none&amp;width=2010" alt="Dockerfile.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://gushi1912.github.io/post-images/1632905086137.png" alt="" loading="lazy"></figure>
 <blockquote>
 <p>创建一个属于自己的镜像</p>
 </blockquote>
@@ -324,7 +324,7 @@ Successfully tagged mycentos:0.1
 <pre><code class="language-shell">docker run -it mycentos:0.1
 </code></pre>
 <p>运行之后会自动进入我们在dockerfile中定义的工作路径，并且vim指令和ifconfig指令都可以使用。<br>
-<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615908119043-e1f10d2e-3536-4d3d-8301-4b1c5174ce3d.png#align=left&amp;display=inline&amp;height=434&amp;margin=%5Bobject%20Object%5D&amp;name=%E9%95%9C%E5%83%8F%E8%BF%90%E8%A1%8C.png&amp;originHeight=579&amp;originWidth=1007&amp;size=45082&amp;status=done&amp;style=none&amp;width=755" alt="镜像运行.png" loading="lazy"><br>
+<img src="https://gushi1912.github.io/post-images/1632905101915.png" alt="" loading="lazy"><br>
 查看镜像的构建历史指令： <code>docker history 镜像</code></p>
 <h2 id="cmd和entrypoint的区别">CMD和ENTRYPOINT的区别</h2>
 <p><code>CMD</code> :指定运行的命令，这个命令是在docker run的过程中执行，效果是容器启动之后自动启动一个执行此命令的进程。一个DockerFile中可以有多个CMD命令。但是实际执行的命令只有最后一条指令。我们也可以在docker run 指令后面添加命令，添加的命令会覆盖DockerFile中的指令。<br>
