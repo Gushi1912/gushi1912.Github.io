@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://gushi1912.github.io</id>
     <title>顾咕咕的博客</title>
-    <updated>2021-03-29T09:23:56.571Z</updated>
+    <updated>2021-09-29T08:37:36.809Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://gushi1912.github.io"/>
     <link rel="self" href="https://gushi1912.github.io/atom.xml"/>
@@ -10,6 +10,549 @@
     <logo>https://gushi1912.github.io/images/avatar.png</logo>
     <icon>https://gushi1912.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, 顾咕咕的博客</rights>
+    <entry>
+        <title type="html"><![CDATA[Docker-基础篇（二）]]></title>
+        <id>https://gushi1912.github.io/post/docker-ji-chu-pian-er/</id>
+        <link href="https://gushi1912.github.io/post/docker-ji-chu-pian-er/">
+        </link>
+        <updated>2021-09-29T08:36:28.000Z</updated>
+        <content type="html"><![CDATA[<figure data-type="image" tabindex="1"><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615707645869-9caa9562-b9b6-4883-a7e4-efcbb1b4f267.png#align=left&amp;display=inline&amp;height=1336&amp;margin=%5Bobject%20Object%5D&amp;name=docker.png&amp;originHeight=1336&amp;originWidth=2126&amp;size=69296&amp;status=done&amp;style=none&amp;width=2126" alt="docker.png" loading="lazy"></figure>
+<h1 id="容器数据卷">容器数据卷</h1>
+<h2 id="什么是容器数据卷">什么是容器数据卷</h2>
+<p>Docker可以将应用和环境打包成一个镜像。<br>
+对于容器中的数据，如果数据都存在容器中，那么删除容器之后，数据就会丢失。所以我们需要：<strong>数据持久化</strong>。<br>
+Docker里的容器之间有一个数据共享的技术，Docker容器中产生的数据可以同步到本地。<br>
+这就是容器卷技术，实际就是<strong>将宿主机的目录挂载到容器上</strong>。</p>
+<p>卷是目录或文件，存在于一个或多个容器中，由docker挂载到容器，但不属于联合文件系统，因此能绕过联合文件系统提供一些用于持续存储或共享数据的特性；<br>
+卷的设计目的就是数据持久化，完全独立于容器的生存周期，因此docker不会在容器删除时删除其挂载的数据卷。<br>
+特点：</p>
+<ol>
+<li>数据卷可在容器之间共享或重用数据</li>
+<li>卷中更改的可以直接生效</li>
+<li>数据卷中的更改不会包含在镜像的更新中</li>
+<li>数据卷的生命周期一直持续到没有容器使用它为止</li>
+</ol>
+<h2 id="使用容器卷">使用容器卷</h2>
+<blockquote>
+<p>方式一：直接使用命令来挂载 -v（另一种方式见dokcerfile挂载）</p>
+</blockquote>
+<pre><code class="language-shell">docker run -it -v 主机目录:容器内的目录 镜像名/ID
+
+#启动一个centos容器
+docker run -it -v /home/gugugu:/home --name centos centos /bin/bash
+#使用inspect命令来查看挂载情况
+docker inspect centos
+</code></pre>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615708914260-b6fdb21c-3406-4443-b2aa-571e56667313.png#align=left&amp;display=inline&amp;height=299&amp;margin=%5Bobject%20Object%5D&amp;name=%E6%8C%82%E8%BD%BD.png&amp;originHeight=299&amp;originWidth=854&amp;size=21913&amp;status=done&amp;style=none&amp;width=854" alt="挂载.png" loading="lazy"><br>
+在容器中的挂载目录中创建一个文件之后，我们可以在宿主机相对应的目录下看到对应文件。<br>
+当我们停止容器之后，在宿主机的对应目录下修改该文件，启动容器之后我们可以看到修改的文件会自动同步过来，这就是双向绑定。<br>
+这样做的好处：比如我们启动一个nginx容器，需要修改nginx中的配置文件，我们可以不用每次进入容器中修改，可以使用挂载的方式将nginx的配置文件同步到宿主机中，这样就可以直接在宿主机中修改，而不用进入容器中。</p>
+<h2 id="实战安装mysql">实战：安装MYSQL</h2>
+<pre><code class="language-shell">#首先下载镜像
+docker pull mysql:5.7
+</code></pre>
+<p>具体怎么运行mysql可以参考Dockerhub中的说明：<a href="https://hub.docker.com/_/mysql">https://hub.docker.com/_/mysql</a><br>
+想要在外部修改mysql配置文件来启动mysql，首先需要先启动mysql将其中的配置文件拷贝一份到宿主机上要挂载的目录</p>
+<pre><code class="language-shell">#先启动mysql
+docker run --name mysql -d -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7
+-e 配置环境变量 MYSQL_ROOT_PASSWORD是启动mysql必须的参数（强制性的）
+#使用docker cp命令将容器中的文件拷贝到宿主机目录
+docker cp mysql:/etc/mysql/conf.d/. /home/mysql/conf
+#拷贝完成之后停止容器，删除，然后使用容器卷技术挂载再启动
+docker run --name mysql -p 3306:3306 -d -v /home/mysql/data:/var/lib/mysql -v /home/mysql/conf:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7
+</code></pre>
+<p>启动成功之后就可以测试是否挂载成功。<br>
+我们首先使用navicat远程连接测试是否可以连接，正常情况下是可以连接的。<br>
+连接成功之后我们在mysql中新建一个数据库test_db。<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615717527251-37d21929-4a69-4def-964e-caaed7cff93f.png#align=left&amp;display=inline&amp;height=221&amp;margin=%5Bobject%20Object%5D&amp;name=%E6%B5%8B%E8%AF%952.png&amp;originHeight=221&amp;originWidth=412&amp;size=10244&amp;status=done&amp;style=none&amp;width=412" alt="测试2.png" loading="lazy"><br>
+然后打开容器中mysql存放数据的目录 <code>/var/lib/mysql/</code> 可以看到test_db目录：<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615717700186-bd5d66e6-0538-4bf2-9b63-19454d7a5392.png#align=left&amp;display=inline&amp;height=487&amp;margin=%5Bobject%20Object%5D&amp;name=%E6%B5%8B%E8%AF%951_1.png&amp;originHeight=649&amp;originWidth=956&amp;size=63512&amp;status=done&amp;style=none&amp;width=717" alt="测试1_1.png" loading="lazy"><br>
+打开宿柱机的挂载目录也可以看到相应的文件。<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615717770835-efdb637d-190d-4673-81fa-f0f1cd5c322f.png#align=left&amp;display=inline&amp;height=437&amp;margin=%5Bobject%20Object%5D&amp;name=%E6%B5%8B%E8%AF%951.png&amp;originHeight=583&amp;originWidth=1044&amp;size=63839&amp;status=done&amp;style=none&amp;width=783" alt="测试1.png" loading="lazy"><br>
+接下来测试配置文件目录的挂载情况，我们在宿主机的配置文件目录/home/mysql/conf下创建一个新的文件test.html。<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615717859387-25cb94df-afff-420e-8dc6-c53ef678d8de.png#align=left&amp;display=inline&amp;height=154&amp;margin=%5Bobject%20Object%5D&amp;name=%E6%B5%8B%E8%AF%953.png&amp;originHeight=205&amp;originWidth=959&amp;size=17092&amp;status=done&amp;style=none&amp;width=719" alt="测试3.png" loading="lazy"><br>
+打开容器中MySQL的的配置文件路径，可以看到新增文件test.html，说明所有路径都成功挂载。<br>
+我们停止并删除容器之后可以看到宿主机中的目录以及文件均未被删除。<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615718110942-79798296-bf21-4578-9e28-6cf8f24f59bb.png#align=left&amp;display=inline&amp;height=207&amp;margin=%5Bobject%20Object%5D&amp;name=%E6%B5%8B%E8%AF%955.png&amp;originHeight=207&amp;originWidth=1837&amp;size=26713&amp;status=done&amp;style=none&amp;width=1837" alt="测试5.png" loading="lazy"></p>
+<h2 id="具名挂载和匿名挂载">具名挂载和匿名挂载</h2>
+<p>具名挂载就是指定挂载卷的名称   <code>-v 具名路径目录名称：容器路径</code> <br>
+匿名挂载就是不指定挂载卷的名称 <code>-v 容器路径</code> <br>
+指定路径挂载就是常用的指定宿主机挂载路径 <code>-v 宿主机路径:容器路径</code></p>
+<pre><code class="language-shell">#匿名挂载测试
+-P	表示随机映射端口
+docker run --name nginx01 -P -v /etc/nginx nginx
+#使用docker inspect nginx01 查看具体的挂载路径
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615722471956-21b8f95f-7acf-4044-9ce6-50df485f276f.png#align=left&amp;display=inline&amp;height=364&amp;margin=%5Bobject%20Object%5D&amp;name=%E5%8C%BF%E5%90%8D%E6%8C%82%E8%BD%BD.png&amp;originHeight=364&amp;originWidth=1700&amp;size=21178&amp;status=done&amp;style=none&amp;width=1700" alt="匿名挂载.png" loading="lazy"></figure>
+<pre><code class="language-shell">#具名挂载测试
+docker run --name nginx02 -P -v nginx-conf:/etc/nginx nginx
+docker inspect nginx02
+</code></pre>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615722548848-46296d40-dcec-4ce9-86e1-5c8fff9ad610.png#align=left&amp;display=inline&amp;height=178&amp;margin=%5Bobject%20Object%5D&amp;name=%E5%85%B7%E5%90%8D%E6%8C%82%E8%BD%BD.png&amp;originHeight=355&amp;originWidth=1128&amp;size=14242&amp;status=done&amp;style=none&amp;width=564" alt="具名挂载.png" loading="lazy"><br>
+<strong>关于Docker volume的操作</strong></p>
+<pre><code class="language-shell">docker volume 
+ls							#列出所有的挂载卷
+inspect 卷名 		#查看卷信息
+create      Create a volume
+inspect     Display detailed information on one or more volumes
+ls          List volumes
+prune       Remove all unused local volumes
+rm          Remove one or more volumes
+
+</code></pre>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615722791072-b65cdd56-c531-481e-99f1-1898b26e68ab.png#align=left&amp;display=inline&amp;height=173&amp;margin=%5Bobject%20Object%5D&amp;name=volume_inspect.png&amp;originHeight=346&amp;originWidth=1025&amp;size=17372&amp;status=done&amp;style=none&amp;width=513" alt="volume_inspect.png" loading="lazy"><br>
+<strong>补充内容</strong></p>
+<pre><code class="language-shell">docker run --name nginx03 -P -v nginx-conf:/etc/nginx:ro nginx
+ro	readonly-只读
+rw	readwrite-可读可写
+</code></pre>
+<p>容器中的路径后面的ro/rw表示操作权限，<strong>如果是ro，就表示该路径在容器中只允许读操作，只能从宿主机的挂载路径中进行读写操作。</strong><br>
+**</p>
+<h2 id="初识dockerfile">初识DockerFile</h2>
+<p>DockerFile就是构建Docker镜像的一个命令行文件。通过这个脚本可以生成一个镜像，镜像是一层一层的，对应脚本中的一个一个命令，每一个命令就相当于一层。</p>
+<blockquote>
+<p>挂载的另一种方式就是使用dockerfile，常用文件名为Dockerfile。</p>
+</blockquote>
+<pre><code class="language-shell">#dockfile内容
+FROM centos
+
+VOLUME [&quot;volume01&quot;,&quot;volume02&quot;]        #此处的挂载是匿名挂载
+
+CMD echo &quot;------end------&quot;
+CMD /bin/bash
+#命令都是采用大写
+
+
+[root@iZuf6e1jhv5i6fv2ux4x53Z dockerfile]# docker build -f dockerfile1 -t gugugu/centos .
+Sending build context to Docker daemon  2.048kB
+Step 1/4 : FROM centos
+ ---&gt; 300e315adb2f
+Step 2/4 : VOLUME [&quot;volume01&quot;,&quot;volume02&quot;]
+ ---&gt; Running in b1d5b8d29259
+Removing intermediate container b1d5b8d29259
+ ---&gt; 373a82c56065
+Step 3/4 : CMD echo &quot;------end------&quot;
+ ---&gt; Running in 513ccf83a7d5
+Removing intermediate container 513ccf83a7d5
+ ---&gt; 5dc1f5741b8c
+Step 4/4 : CMD /bin/bash
+ ---&gt; Running in 7d4f53bc1763
+Removing intermediate container 7d4f53bc1763
+ ---&gt; 9df6c7178d77
+Successfully built 9df6c7178d77
+Successfully tagged gugugu/centos:latest
+[root@iZuf6e1jhv5i6fv2ux4x53Z dockerfile]# docker images
+REPOSITORY      TAG       IMAGE ID       CREATED         SIZE
+gugugu/centos   latest    9df6c7178d77   4 seconds ago   209MB
+tomcat01        GU        58ed273bfacf   30 hours ago    654MB
+hello-world     latest    d1165f221234   9 days ago      13.3kB
+mysql           5.7       a70d36bc331a   7 weeks ago     449MB
+</code></pre>
+<p>构建镜像成功之后我们启动容器，并进入容器内部</p>
+<pre><code class="language-shell">docker run -it gugugu/centos /bin/bash
+</code></pre>
+<p>可以看到容器内部有两个挂载的目录<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615816556980-a0d75a68-35d9-4168-b180-c7c77dd25f68.png#align=left&amp;display=inline&amp;height=392&amp;margin=%5Bobject%20Object%5D&amp;name=dockerfile%E6%8C%82%E8%BD%BD.png&amp;originHeight=783&amp;originWidth=1482&amp;size=96591&amp;status=done&amp;style=none&amp;width=741" alt="dockerfile挂载.png" loading="lazy"><br>
+使用容器查看命令查看容器的具体细节可以看到宿主机中的对应的挂载目录 <code>docker inspect 52987210ea73</code> ,并且使用的是匿名挂载的方式。<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615816644452-67ea5169-7397-453a-a7ac-06b0a06fafae.png#align=left&amp;display=inline&amp;height=318&amp;margin=%5Bobject%20Object%5D&amp;name=dockerfile%E6%8C%82%E8%BD%BD1.png&amp;originHeight=636&amp;originWidth=1678&amp;size=46916&amp;status=done&amp;style=none&amp;width=839" alt="dockerfile挂载1.png" loading="lazy"><br>
+这种挂载方式我们平时使用的比较多，主要用于构建我们自己的镜像。<br>
+若构建镜像的时候没有使用dockerfile来挂载卷，我们还可以使用-v的方式在启动的时候挂载。</p>
+<h2 id="数据容器卷">数据容器卷</h2>
+<p>数据卷容器可以理解为某个容器作为父容器，其他容器挂载到该容器上,这个被挂载的容器成为数据卷容器，实现不同容器之间的数据同步，它们之间其实是双向绑定的。实际上还是利用挂载的原理，宿主机的目录同时挂载到三个容器上，具体可以使用docker inspect命令查看。</p>
+<p>命令： <code>--volumes-from</code> <br>
+我们先启动三个容器，一个容器作为父容器，另外两个容器挂载到父容器上实现数据同步。</p>
+<pre><code class="language-shell">#使用我们上面使用dockerfile生成的镜像来测试
+docker run -it --name centos01 gugugu/centos
+docker run -it --name centos02 --volumes-from centos01 gugugu/centos
+docker run -it --name centos03 --volumes-from centos01 gugugu/centos
+</code></pre>
+<p>我们可以在三个容器的其中一个的挂载卷目录上添加删除文件，在另外两个容器中查看挂在卷中的文件同步情况。<br>
+为了证明实际是宿主机的挂载卷目录同时挂载到三个容器上，我们可以使用 <code>docker inspect</code> 查看任一容器的宿主机挂载目录的位置，在宿主机目录上进行添加和删除操作，然后在三个容器的挂载目录查看文件同步情况和宿主机目录一致。<br>
+具体操作就不截图展示了。</p>
+<hr>
+<h1 id="dockerfile">DockerFile</h1>
+<p>DockerFIle是用来构建docker镜像的文件。<br>
+构建步骤：</p>
+<ol>
+<li>编写一个DockerFile文件</li>
+<li>使用docker build命令构建docker镜像</li>
+<li>docker run 运行镜像</li>
+<li>docker push 发布镜像（DockerHub、阿里云镜像仓库）</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615900458677-51b111d9-31ef-49b5-9cd5-0d6a0774e4d7.png#align=left&amp;display=inline&amp;height=525&amp;margin=%5Bobject%20Object%5D&amp;name=%E5%AE%98%E6%96%B9%E9%95%9C%E5%83%8F.png&amp;originHeight=1050&amp;originWidth=1225&amp;size=126014&amp;status=done&amp;style=none&amp;width=613" alt="官方镜像.png" loading="lazy"><br>
+上图是centos官方镜像的DockerFile，可以发现很多功能都没有，只是一个简单的基础版镜像。<br>
+我们可以自己制作镜像，添加自己想要的功能。</p>
+<h2 id="dockerfile构建过程">DockerFile构建过程</h2>
+<p><strong>基础知识</strong></p>
+<ol>
+<li>每个保留关键字（指令）都必须是大写字母</li>
+<li>执行是按从上到下的顺序</li>
+<li>#表示注释</li>
+<li>每一个指令都会创建提交一个新的镜像层，并提交。</li>
+</ol>
+<p><strong>构建过程</strong></p>
+<ul>
+<li>Dokcer从基础镜像运行一个容器。</li>
+<li>执行一条指令，对容器做出修改。</li>
+<li>执行类似docker commit的操作，提交一个新的镜像层。</li>
+<li>Docker再基于刚刚提交的镜像运行一个新的容器。</li>
+<li>执行DockerFile的下一条指令，直到所有的指令都执行完毕。</li>
+</ul>
+<blockquote>
+<p>每一个DockerFile的第一行指令都应该是FROM，FROM指令指定一个已经存在的镜像，后续的操作都是基于该镜像进行，这个镜像被称为基础镜像（base image）。</p>
+</blockquote>
+<h2 id="dockerfile命令">DockerFile命令</h2>
+<figure data-type="image" tabindex="3"><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615900900331-23d5042a-905c-4fcf-8859-3252b0e5f4f3.png#align=left&amp;display=inline&amp;height=2025&amp;margin=%5Bobject%20Object%5D&amp;name=Dockerfile.png&amp;originHeight=2025&amp;originWidth=2010&amp;size=152731&amp;status=done&amp;style=none&amp;width=2010" alt="Dockerfile.png" loading="lazy"></figure>
+<blockquote>
+<p>创建一个属于自己的镜像</p>
+</blockquote>
+<pre><code class="language-shell">[root@iZuf6e1jhv5i6fv2ux4x53Z dockerfile]# vim mydockerfile
+[root@iZuf6e1jhv5i6fv2ux4x53Z dockerfile]# vim mydockerfile
+
+FROM centos
+MAINTAINER gugugu&lt;gushi1912@gmail.com&gt;
+
+ENV MYPATH /usr/local
+WORKDIR $MYPATH
+
+RUN yum install -y vim &amp;&amp; yum install -y net-tools
+
+EXPOSE 80
+
+CMD echo $MYPATH
+CMD echo &quot;------end------&quot;
+CMD /bin/bash
+
+#以上三个CMD命令实际上只会执行最后一个
+#CMD[]将命令用数组包装起来是Docker推荐使用的方式，它会告诉Docker按照原命令来执行，若不用[]括起来，Docker执行指令的时候就会在命令前加上
+/bin/sh -c 这可能会起到意想不到的作用。同样适用于ENTRYPOINT.
+</code></pre>
+<p>然后使用docker build 命令来构建镜像</p>
+<pre><code class="language-shell">docker build -f mydockerfile -t mycentos:0.1 .
+# . 表示在同级目录中查找Dockerfile文件，也可以指定一个git仓库的源地址来指定Dockerfile的位置
+#执行成功之后
+Successfully built 05871b41d7ca
+Successfully tagged mycentos:0.1
+</code></pre>
+<p>运行我们所创建的镜像</p>
+<pre><code class="language-shell">docker run -it mycentos:0.1
+</code></pre>
+<p>运行之后会自动进入我们在dockerfile中定义的工作路径，并且vim指令和ifconfig指令都可以使用。<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1615908119043-e1f10d2e-3536-4d3d-8301-4b1c5174ce3d.png#align=left&amp;display=inline&amp;height=434&amp;margin=%5Bobject%20Object%5D&amp;name=%E9%95%9C%E5%83%8F%E8%BF%90%E8%A1%8C.png&amp;originHeight=579&amp;originWidth=1007&amp;size=45082&amp;status=done&amp;style=none&amp;width=755" alt="镜像运行.png" loading="lazy"><br>
+查看镜像的构建历史指令： <code>docker history 镜像</code></p>
+<h2 id="cmd和entrypoint的区别">CMD和ENTRYPOINT的区别</h2>
+<p><code>CMD</code> :指定运行的命令，这个命令是在docker run的过程中执行，效果是容器启动之后自动启动一个执行此命令的进程。一个DockerFile中可以有多个CMD命令。但是实际执行的命令只有最后一条指令。我们也可以在docker run 指令后面添加命令，添加的命令会覆盖DockerFile中的指令。<br>
+<code>ENTRYPOINT</code> : 镜像制作完成之后启动容器时作为默认执行的命令，这个命令不会被docker run命令后跟着的指令覆盖掉，而是会追加到ENTRYPOINT命令之后执行。如果一个DockerFile里有CMD和ENTRYPOINT命令同时存在，那么CMD命令将会被追加到ENTRYPOINT指令之后执行。</p>
+<pre><code class="language-shell">#创建一个测试CMD命令的dockerfile
+FROM centos
+CMD [&quot;ls&quot;,&quot;-a&quot;]
+</code></pre>
+<p>构建镜像之后执行dokcer run 命令会直接执行 <code>ls -a</code> 命令，如果在docker run 命令之后加上 <code>-l</code>  则会报错。</p>
+<pre><code class="language-shell">#创建一个测试ENTRYPOINT命令的dockerfile
+FROM centos
+CMD [&quot;mkdir&quot;,&quot;gugugu&quot;]         
+ENTRYPOINT [&quot;ls&quot;,&quot;-a&quot;]
+</code></pre>
+<p>实际执行docker run命令的时候CMD命令确实会追加到ENTRYPOINT命令之后，不过只是单纯的拼接成 <code>ls -a mkdir gugugu</code> ,并没有用 <code>&amp;</code> 连接,实际测试用&amp;命令连接也无法识别，不能正确执行，因此猜测在追加指令的情况下的命令仍是一条完整单一功能指令才能正确执行。<br>
+把dockerfile中的CMD命令删掉，之后执行 <code>docker run image -l</code>  可以正常执行。</p>
+<h2 id="实战构建tomcat镜像">实战：构建tomcat镜像</h2>
+<ol>
+<li>tomcat压缩包 jdk压缩包(jdk环境)</li>
+<li>编写dockerfile文件，官方指定文件名DockerFile，不用-f指定文件名</li>
+</ol>
+<h2 id="发布自己的镜像">发布自己的镜像</h2>
+<blockquote>
+<p>发布到Dockerhub上</p>
+</blockquote>
+<ol>
+<li>首先在<a href="https://hub.docker.com/">https://hub.docker.com/</a>上创建一个账号。</li>
+<li>点击首页的Create a Repository创建一个私人仓库，用户仓库的命名为： <code>username/repositoryname</code> 。</li>
+<li>在本地使用 <code>docker login -u username</code> 登录Dockerhub。</li>
+<li>最后就可以使用docker push将自己的仓库发布到自己的私人仓库。</li>
+</ol>
+<pre><code class="language-shell">#docker push的使用方式
+dokcer push docker-username/repository-name:tagname
+
+在这里 repository-name标识一个项目（镜像）的名称，比如你要提交一个tomcat服务镜像，那么这个仓库名就应该为tomcat。
+这个仓库中存储的就应该是tomcat这个服务的所有版本
+即：
+tomcat:01 
+tomcat:02
+...
+</code></pre>
+<blockquote>
+<p>发布到阿里云镜像服务上</p>
+</blockquote>
+<ol>
+<li>链接：<a href="https://cr.console.aliyun.com/cn-shanghai/instance/dashboard">https://cr.console.aliyun.com/cn-shanghai/instance/dashboard</a></li>
+<li>首先创建命名空间</li>
+<li>创建镜像仓库</li>
+<li>按照说明来发布镜像</li>
+</ol>
+<p><strong>关于docker tag的使用</strong>：</p>
+<pre><code class="language-shell">docker tag sourceImage[:tag] targetImage[:tag]
+给镜像重命名，但是原有镜像还是存在的，新的镜像只是指向原有镜像
+</code></pre>
+<hr>
+<h1 id="docker-网络">Docker 网络</h1>
+<h2 id="理解docker0">理解Docker0</h2>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1620218102580-0819beb8-567d-405b-a1de-5aab0d37e406.png#align=left&amp;display=inline&amp;height=213&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=213&amp;originWidth=1011&amp;size=42243&amp;status=done&amp;style=none&amp;width=1011" alt="image.png" loading="lazy"><br>
+<strong>问题</strong> ：Docker是如何处理容器网络访问的？？？</p>
+<pre><code class="language-shell">#运行一个容器
+[root@iZuf6e1jhv5i6fv2ux4x53Z gugugu]# docker run --name tomcat01 -P tomcat
+#查看容器内部的网络地址 ip addr，我们可以发现容器启动的时候会得到一个eth0@if155的ip地址，这个是docker分配的！
+[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker exec -it tomcat01 ip addr
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+154: eth0@if155: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:ac:12:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.18.0.2/16 brd 172.18.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+
+#在这里我们思考一个问题：宿主机能不能ping通容器内部？
+答案是：能！！！
+</code></pre>
+<blockquote>
+<p>原理</p>
+</blockquote>
+<ol>
+<li>我们每启动一个docker容器，docker就会给docker容器分配一个ip。我们只要安装了docker，就会有一个网卡docker0（桥接模式）。使用的技术是 <strong>evth-pair技术。</strong></li>
+</ol>
+<p>ip addr之后，我们可以发现多了一个网卡155，这个和之前容器内部的网卡对应上了<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1620219079493-0f867dd7-d1e6-4ee2-b10e-cdbd41bae3b6.png#align=left&amp;display=inline&amp;height=243&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=243&amp;originWidth=959&amp;size=38265&amp;status=done&amp;style=none&amp;width=959" alt="image.png" loading="lazy"></p>
+<ol start="2">
+<li>再启动一个容器，然后 ip addr发现又增加了一个网卡，并且和容器一一对应</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1620219246777-683f6c08-af10-4fee-bc83-1285a98f8f58.png#align=left&amp;display=inline&amp;height=174&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=174&amp;originWidth=792&amp;size=23072&amp;status=done&amp;style=none&amp;width=792" alt="image.png" loading="lazy"><br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1620219291777-36fabf2a-104c-49ae-b6bf-eeb829fdd832.png#align=left&amp;display=inline&amp;height=273&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=273&amp;originWidth=969&amp;size=44366&amp;status=done&amp;style=none&amp;width=969" alt="image.png" loading="lazy"><br>
+我们发现这个容器增加的网卡都是一对对的，<br>
+evth-apir就是一堆虚拟网络设备接口，他们都是成对出现的，一段连着协议，一段彼此相连，<br>
+正因为有这个特性，evth-pair充当一个桥梁，连接各种虚拟网络设备，<br>
+openstack，Docker容器之间的连接，OVS的连接使用的都是veth-pair技术。</p>
+<ol start="3">
+<li>测试tomcat01和tomcat02之间是否可以ping通？ <strong>可以</strong></li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1620219638616-9f6233dc-9343-4abf-bbde-7eb46d854024.png#align=left&amp;display=inline&amp;height=145&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=145&amp;originWidth=673&amp;size=18875&amp;status=done&amp;style=none&amp;width=673" alt="image.png" loading="lazy"><br>
+结论：tomcat01和tomcat02使用的都是同一个路由器：docker0<br>
+所有的容器不指定网络的情况下，都是docker0路由的，docker会给我们分配一个默认的可用的ip。<br>
+Docker使用的是Linux的桥接模式，宿主机中的是一个Docker容器的网桥 docker0.<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1620220170125-f731eabf-7e00-44e4-94d6-5fc0a5be3700.png#align=left&amp;display=inline&amp;height=446&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=891&amp;originWidth=1230&amp;size=130026&amp;status=done&amp;style=none&amp;width=615" alt="image.png" loading="lazy"><br>
+Docker中的所有的网络接口都是虚拟的。虚拟的转发效率高！！！<br>
+只要容器删除，对应的一堆网桥就消失了。<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1620221267048-b7cab444-0086-40f0-a6ce-917c5ae599a6.png#align=left&amp;display=inline&amp;height=485&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=485&amp;originWidth=799&amp;size=38199&amp;status=done&amp;style=none&amp;width=799" alt="image.png" loading="lazy"></p>
+<h2 id="-link">--link</h2>
+<blockquote>
+<p>思考一个场景，我们编写了一个微服务，database url=ip，如果项目不重启，数据库ip换掉了，我们希望可以处理这个问题，也就是希望可以通过名字来进行访问容器？</p>
+</blockquote>
+<pre><code class="language-shell">[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker exec -it tomcat02 ping tomcat01
+ping: tomcat01: Name or service not known
+#可以看到直接ping服务名是ping不通的
+
+#使用--link之后可以通过服务名来ping通
+[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker run --name tomcat03 -d -P --link tomcat02 tomcat
+8dc211d736835132996588a2506e89fd2b911fc10935284b760bd6b9877bc634
+[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker ps
+CONTAINER ID   IMAGE     COMMAND             CREATED          STATUS          PORTS                     NAMES
+8dc211d73683   tomcat    &quot;catalina.sh run&quot;   3 seconds ago    Up 2 seconds    0.0.0.0:49162-&gt;8080/tcp   tomcat03
+0dddcfb4c217   tomcat    &quot;catalina.sh run&quot;   26 minutes ago   Up 26 minutes   0.0.0.0:49161-&gt;8080/tcp   tomcat02
+3219645c299e   tomcat    &quot;catalina.sh run&quot;   43 minutes ago   Up 43 minutes   0.0.0.0:49160-&gt;8080/tcp   tomcat01
+[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker exec -it tomcat03 ping tomcat02
+PING tomcat02 (172.18.0.3) 56(84) bytes of data.
+64 bytes from tomcat02 (172.18.0.3): icmp_seq=1 ttl=64 time=0.107 ms
+64 bytes from tomcat02 (172.18.0.3): icmp_seq=2 ttl=64 time=0.079 ms
+64 bytes from tomcat02 (172.18.0.3): icmp_seq=3 ttl=64 time=0.083 ms
+
+#反向可以ping通吗？ping不通，只是单向绑定，其实就是hosts映射
+[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker exec -it tomcat02 ping tomcat03
+ping: tomcat03: Name or service not known
+</code></pre>
+<p>我们可以通过inspect命令来查看tomcat02和tomcat03之间的关系：<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1620221546821-0fca8e48-ee44-422b-863f-cb6e245207a3.png#align=left&amp;display=inline&amp;height=50&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=50&amp;originWidth=308&amp;size=2030&amp;status=done&amp;style=none&amp;width=308" alt="image.png" loading="lazy"><br>
+也可以查看容器tomcat03的hosts文件里的配置（本质就是再hosts文件添加了映射）：<br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1620221705532-958d2115-7ad5-4fd0-8289-08160a9fba91.png#align=left&amp;display=inline&amp;height=143&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=143&amp;originWidth=679&amp;size=13498&amp;status=done&amp;style=none&amp;width=679" alt="image.png" loading="lazy"><br>
+<strong>实际开发环境已经不推荐使用--link</strong> <br>
+推荐使用自定义网络。</p>
+<h2 id="自定义网络">自定义网络</h2>
+<blockquote>
+<p>查看所有的docker网络</p>
+</blockquote>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1620226278945-c170f378-ee0c-4c44-8070-21ee6381f5d1.png#align=left&amp;display=inline&amp;height=82&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=82&amp;originWidth=433&amp;size=7831&amp;status=done&amp;style=none&amp;width=433" alt="image.png" loading="lazy"><br>
+首先了解一下网络模式：<br>
+<strong>桥接模式</strong> ： bridge，就相当于再网络之间搭桥，此处就是使用docker搭桥，比如0.2和0.3通信使用0.1来建立连接<br>
+<strong>none</strong> ：不配置网络<br>
+<strong>host</strong> ：和宿主机共享网络<br>
+<strong>container</strong> ：容器网络连通（不推荐使用）</p>
+<p><strong>测试</strong></p>
+<pre><code class="language-shell">#我们的直接启动命令是默认使用--net bridge，这个就是docker0
+docker run -d -P --name tomcat01 tomcat
+docker run -d -P --name tomcat01 --net bridge tomcat
+
+#docker0的特点：
+1. 默认时使用docker0的
+2.通过容器名是不能访问的
+3.通过--link是可以打通连接的
+
+#我们可以使用自定义网络
+[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker network create -d bridge --subnet 192.168.0.0/16 --gateway 192.168.0.1 mynet
+2c27888ef29de18be748bd0c480dff5ba6a54ab0c4312a34a53055bb5f5dc0ac
+[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+0982a0bbe121   bridge    bridge    local
+c08d78952fae   host      host      local
+2c27888ef29d   mynet     bridge    local
+175e2e0d6e59   none      null      local
+</code></pre>
+<p>启动两个容器之后再查看创建的网络，可以看到该网络下有两个刚刚创建的服务：</p>
+<pre><code class="language-shell">docker network inspect mynet
+[
+    {
+        &quot;Name&quot;: &quot;mynet&quot;,
+        &quot;Id&quot;: &quot;2c27888ef29de18be748bd0c480dff5ba6a54ab0c4312a34a53055bb5f5dc0ac&quot;,
+        &quot;Created&quot;: &quot;2021-05-05T23:14:19.563722572+08:00&quot;,
+        &quot;Scope&quot;: &quot;local&quot;,
+        &quot;Driver&quot;: &quot;bridge&quot;,
+        &quot;EnableIPv6&quot;: false,
+        &quot;IPAM&quot;: {
+            &quot;Driver&quot;: &quot;default&quot;,
+            &quot;Options&quot;: {},
+            &quot;Config&quot;: [
+                {
+                    &quot;Subnet&quot;: &quot;192.168.0.0/16&quot;,
+                    &quot;Gateway&quot;: &quot;192.168.0.1&quot;
+                }
+            ]
+        },
+        &quot;Internal&quot;: false,
+        &quot;Attachable&quot;: false,
+        &quot;Ingress&quot;: false,
+        &quot;ConfigFrom&quot;: {
+            &quot;Network&quot;: &quot;&quot;
+        },
+        &quot;ConfigOnly&quot;: false,
+        &quot;Containers&quot;: {
+            &quot;11521b8c79e01a2ddd8f999b3487a6fe47330dd7cdee53ca8b1dd901fcb95dfd&quot;: {
+                &quot;Name&quot;: &quot;tomcat-mynet-02&quot;,
+                &quot;EndpointID&quot;: &quot;d049aecef238e37d2fbe8120662396b27f7d64ffa267dd6a9b119d47618b5bfb&quot;,
+                &quot;MacAddress&quot;: &quot;02:42:c0:a8:00:03&quot;,
+                &quot;IPv4Address&quot;: &quot;192.168.0.3/16&quot;,
+                &quot;IPv6Address&quot;: &quot;&quot;
+            },
+            &quot;119ad031251c65764c16d62c10ec62aa3bfa08297e391620af71847276478531&quot;: {
+                &quot;Name&quot;: &quot;tomcat-mynet-01&quot;,
+                &quot;EndpointID&quot;: &quot;07c7ea17f65b1f8ef3c70fa2bb2196135ef11a2e97bd106f75943fe78cdd4dbc&quot;,
+                &quot;MacAddress&quot;: &quot;02:42:c0:a8:00:02&quot;,
+                &quot;IPv4Address&quot;: &quot;192.168.0.2/16&quot;,
+                &quot;IPv6Address&quot;: &quot;&quot;
+            }
+        },
+        &quot;Options&quot;: {},
+        &quot;Labels&quot;: {}
+    }
+]
+</code></pre>
+<p>现在通过ip和服务名都可以ping通：</p>
+<pre><code class="language-shell">[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker exec -it tomcat-mynet-01 ping 192.168.0.3
+PING 192.168.0.3 (192.168.0.3) 56(84) bytes of data.
+64 bytes from 192.168.0.3: icmp_seq=1 ttl=64 time=0.140 ms
+64 bytes from 192.168.0.3: icmp_seq=2 ttl=64 time=0.075 ms
+64 bytes from 192.168.0.3: icmp_seq=3 ttl=64 time=0.089 ms
+
+#现在是可以不通过--link也可以ping通
+[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker exec -it tomcat-mynet-01 ping tomcat-mynet-02
+PING tomcat-mynet-02 (192.168.0.3) 56(84) bytes of data.
+64 bytes from tomcat-mynet-02.mynet (192.168.0.3): icmp_seq=1 ttl=64 time=0.058 ms
+64 bytes from tomcat-mynet-02.mynet (192.168.0.3): icmp_seq=2 ttl=64 time=0.083 ms
+64 bytes from tomcat-mynet-02.mynet (192.168.0.3): icmp_seq=3 ttl=64 time=0.097 ms
+
+#我们可以看到两个容器中的hosts都添加了对应的映射
+[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker exec -it tomcat-mynet-01 cat /etc/hosts
+127.0.0.1	localhost
+::1	localhost ip6-localhost ip6-loopback
+fe00::0	ip6-localnet
+ff00::0	ip6-mcastprefix
+ff02::1	ip6-allnodes
+ff02::2	ip6-allrouters
+192.168.0.2	119ad031251c
+[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker exec -it tomcat-mynet-02 cat /etc/hosts
+127.0.0.1	localhost
+::1	localhost ip6-localhost ip6-loopback
+fe00::0	ip6-localnet
+ff00::0	ip6-mcastprefix
+ff02::1	ip6-allnodes
+ff02::2	ip6-allrouters
+192.168.0.3	11521b8c79e0
+</code></pre>
+<p>我们自定义的网络docker都已经帮我们维护好了对应的关系，推荐使用这种自定义网络的形式。<br>
+好处：<br>
+对于不通的集群比如redis和mysql，不同的集群使用不同的网络，保证集群是安全和健康的。</p>
+<h2 id="网络连通">网络连通</h2>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1620229266904-d8e386a4-f0f0-4ca5-a3b1-bcc39f03260f.png#align=left&amp;display=inline&amp;height=533&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=533&amp;originWidth=742&amp;size=18920&amp;status=done&amp;style=none&amp;width=742" alt="image.png" loading="lazy"><br>
+想要tomcat01能够ping通tomcat-mynet-01，这样显然是不行的。<br>
+我们可以使用 <code>docker network connect</code>命令来实现</p>
+<pre><code class="language-shell">docker network connect mynet tomcat01
+[root@iZuf6e1jhv5i6fv2ux4x53Z ~]# docker network inspect mynet
+[
+    {
+        &quot;Name&quot;: &quot;mynet&quot;,
+        &quot;Id&quot;: &quot;2c27888ef29de18be748bd0c480dff5ba6a54ab0c4312a34a53055bb5f5dc0ac&quot;,
+        &quot;Created&quot;: &quot;2021-05-05T23:14:19.563722572+08:00&quot;,
+        &quot;Scope&quot;: &quot;local&quot;,
+        &quot;Driver&quot;: &quot;bridge&quot;,
+        &quot;EnableIPv6&quot;: false,
+        &quot;IPAM&quot;: {
+            &quot;Driver&quot;: &quot;default&quot;,
+            &quot;Options&quot;: {},
+            &quot;Config&quot;: [
+                {
+                    &quot;Subnet&quot;: &quot;192.168.0.0/16&quot;,
+                    &quot;Gateway&quot;: &quot;192.168.0.1&quot;
+                }
+            ]
+        },
+        &quot;Internal&quot;: false,
+        &quot;Attachable&quot;: false,
+        &quot;Ingress&quot;: false,
+        &quot;ConfigFrom&quot;: {
+            &quot;Network&quot;: &quot;&quot;
+        },
+        &quot;ConfigOnly&quot;: false,
+        &quot;Containers&quot;: {
+            &quot;11521b8c79e01a2ddd8f999b3487a6fe47330dd7cdee53ca8b1dd901fcb95dfd&quot;: {
+                &quot;Name&quot;: &quot;tomcat-mynet-02&quot;,
+                &quot;EndpointID&quot;: &quot;d049aecef238e37d2fbe8120662396b27f7d64ffa267dd6a9b119d47618b5bfb&quot;,
+                &quot;MacAddress&quot;: &quot;02:42:c0:a8:00:03&quot;,
+                &quot;IPv4Address&quot;: &quot;192.168.0.3/16&quot;,
+                &quot;IPv6Address&quot;: &quot;&quot;
+            },
+            &quot;119ad031251c65764c16d62c10ec62aa3bfa08297e391620af71847276478531&quot;: {
+                &quot;Name&quot;: &quot;tomcat-mynet-01&quot;,
+                &quot;EndpointID&quot;: &quot;07c7ea17f65b1f8ef3c70fa2bb2196135ef11a2e97bd106f75943fe78cdd4dbc&quot;,
+                &quot;MacAddress&quot;: &quot;02:42:c0:a8:00:02&quot;,
+                &quot;IPv4Address&quot;: &quot;192.168.0.2/16&quot;,
+                &quot;IPv6Address&quot;: &quot;&quot;
+            },
+            &quot;5dfaf5196081035142fe00549ae2a68b5ad44d64f1aa88a8e52a3e041442fe85&quot;: {
+                &quot;Name&quot;: &quot;tomcat01&quot;,
+                &quot;EndpointID&quot;: &quot;d95c27f4a83d6a856144b4cd90551bd229e1239bbc9b200647bf88e39a85b055&quot;,
+                &quot;MacAddress&quot;: &quot;02:42:c0:a8:00:04&quot;,
+                &quot;IPv4Address&quot;: &quot;192.168.0.4/16&quot;,
+                &quot;IPv6Address&quot;: &quot;&quot;
+            }
+        },
+        &quot;Options&quot;: {},
+        &quot;Labels&quot;: {}
+    }
+]
+</code></pre>
+<p>我们可以看到tomcat-mynet-01是直接加到mynet之下，并分配了一个ip<br>
+这其实就是给tomcat-mynet-01分配了两个ip，就像阿里云服务器一个公网ip和一个私网ip</p>
+<h2 id="实战redis集群部署">实战：redis集群部署</h2>
+<figure data-type="image" tabindex="4"><img src="https://cdn.nlark.com/yuque/0/2021/png/2907980/1620229758691-f87964f9-a319-4d51-a8ae-4b4420adeec2.png#align=left&amp;display=inline&amp;height=392&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=783&amp;originWidth=1314&amp;size=103161&amp;status=done&amp;style=none&amp;width=657" alt="image.png" loading="lazy"></figure>
+<h1 id="计划看完redis再来实践">计划看完redis再来实践！！！</h1>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Docker-基础篇（一）]]></title>
         <id>https://gushi1912.github.io/post/docker-ji-chu-pian-yi/</id>
