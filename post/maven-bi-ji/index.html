@@ -1,22 +1,92 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://gushi1912.github.io</id>
-    <title>顾咕咕的博客</title>
-    <updated>2021-09-30T06:19:02.855Z</updated>
-    <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://gushi1912.github.io"/>
-    <link rel="self" href="https://gushi1912.github.io/atom.xml"/>
-    <subtitle>温故而知新</subtitle>
-    <logo>https://gushi1912.github.io/images/avatar.png</logo>
-    <icon>https://gushi1912.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2021, 顾咕咕的博客</rights>
-    <entry>
-        <title type="html"><![CDATA[Maven笔记]]></title>
-        <id>https://gushi1912.github.io/post/maven-bi-ji/</id>
-        <link href="https://gushi1912.github.io/post/maven-bi-ji/">
-        </link>
-        <updated>2021-09-30T06:17:23.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="maven概述">Maven概述</h2>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>Maven笔记 | 顾咕咕的博客</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://gushi1912.github.io/favicon.ico?v=1632982737260">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://gushi1912.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://gushi1912.github.io">
+        <img class="avatar" src="https://gushi1912.github.io/images/avatar.png?v=1632982737260" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://gushi1912.github.io">
+        <h1 class="site-title">顾咕咕的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">Maven笔记</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2021-09-30</span>
+            
+          </div>
+          <div class="post-content">
+            <h2 id="maven概述">Maven概述</h2>
 <p>Maven是一个项目管理工具，它包含了一个项目对象模型（POM：Project Object Model），一组标准集合，一个项目生命周期（Project Lifiecycl），一个依赖管理系统（Dependency Management System），和用来运行定义在生命周期阶段（phase）中插件（plugin）目标（goal）的逻辑。简单来说，Maven是一个项目管理工具，可以对Java<strong>项目进行构建</strong>，<strong>依赖管理</strong>。</p>
 <h2 id="maven安装">Maven安装</h2>
 <ol>
@@ -424,6 +494,50 @@ b. 如果 B 不用 SNAPSHOT, 但一直使用一个单一的 Release 版本号，
 </code></pre>
 <p>type为pom表示引入该类型的pom文件，并且不会实际导入依赖，只是起到一个版本管理的作用，子项目导入依赖的时候不需要添加版本信息。<br>
 scope设置为import可以继承另一个pom文件，这样就可以实现多继承。</p>
-]]></content>
-    </entry>
-</feed>
+
+          </div>
+        </div>
+
+        
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://gushi1912.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
